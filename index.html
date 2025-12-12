@@ -1,0 +1,744 @@
+import React, { useState, useEffect, useRef } from 'react';
+import { 
+  ChevronLeft, 
+  ChevronRight, 
+  BookOpen, 
+  Settings, 
+  Type, 
+  Menu, 
+  X
+} from 'lucide-react';
+
+// --- CONTENIDO DEL LIBRO (DATA - VERSIÓN EXTENDIDA) ---
+const bookData = [
+  // --- PRELIMINARES ---
+  {
+    type: 'cover',
+    title: "El Libro de Adviento y Navidad",
+    subtitle: "Una Guía Espiritual Completa para el Adviento",
+    author: "Edición Ampliada",
+    image: "https://i.postimg.cc/d0yHyvxb/Gemini-Generated-Image-r1hrk0r1hrk0r1hr.webp",
+    content: ""
+  },
+  {
+    type: 'copyright',
+    title: "Legales",
+    content: `
+      <div class="text-center text-sm mt-20">
+        <h2>El Libro de Adviento y Navidad</h2>
+        <p><strong>Meditaciones para el Tiempo de Adviento</strong></p>
+        <br/><br/>
+        <p>© 2024 Editorial Digital Católica.</p>
+        <p>Todos los derechos reservados.</p>
+        <br/>
+        <p>Las citas bíblicas están tomadas de la Sagrada Biblia, versión oficial de la Conferencia Episcopal.</p>
+        <br/>
+        <p><em>Nihil Obstat</em>: Pbro. Dr. Francisco Javier López</p>
+        <p><em>Imprimatur</em>: + Mons. Antonio Cañizares, Arzobispo</p>
+        <br/><br/>
+        <p>Diseñado para la edificación espiritual de los fieles.</p>
+      </div>
+    `
+  },
+  {
+    type: 'chapter',
+    title: "Dedicatoria",
+    content: `
+      <div class="flex flex-col justify-center h-full italic text-center px-8">
+        <p>"A la Santísima Virgen María,</p>
+        <p>Estrella de la Mañana,</p>
+        <p>que en su seno llevó la Esperanza del Mundo.</p>
+        <br/>
+        <p>Y a todos los que, en medio de la oscuridad,</p>
+        <p>siguen buscando la Luz."</p>
+      </div>
+    `
+  },
+  {
+    type: 'chapter',
+    title: "Prefacio",
+    content: `
+      <h3>Prefacio</h3>
+      <p>Vivimos en una época de inmediatez. Queremos todo aquí y ahora. Sin embargo, Dios tiene sus tiempos. El Adviento es la escuela de la paciencia de Dios.</p>
+      <p>Este libro no es solo para ser leído, sino para ser rezado. No se trata de devorar páginas, sino de dejar que las verdades eternas reposen en el alma como la lluvia fina que empapa la tierra.</p>
+      <p>A lo largo de estas 50 estaciones, recorreremos juntos el desierto de la espera hasta llegar a la cueva de Belén. Encontraremos profetas, ángeles, pastores y, sobre todo, a una Madre que espera.</p>
+      <p>Te invito a desconectar del ruido exterior para conectar con la melodía interior de la Gracia. ¡Buen camino!</p>
+    `
+  },
+  {
+    type: 'chapter',
+    title: "Introducción Teológica",
+    content: `
+      <h3>El Misterio del Adviento</h3>
+      <p>El Adviento (del latín <em>adventus</em>, venida) no es simplemente una cuenta regresiva para la Navidad. Es un tiempo litúrgico con una identidad teológica propia y profunda.</p>
+      <p>La Iglesia celebra una <strong>triple venida</strong> de Cristo:</p>
+      <ol class="list-decimal pl-5 space-y-2 mt-2">
+        <li><strong>Venida Histórica:</strong> En la carne, en Belén, hace dos mil años. Es el fundamento de nuestra fe.</li>
+        <li><strong>Venida Sacramental:</strong> Hoy, en la Eucaristía, en la Palabra y en el prójimo. Es el "hoy" de nuestra salvación.</li>
+        <li><strong>Venida Escatológica:</strong> Al final de los tiempos, con gloria y majestad para juzgar a vivos y muertos. Es nuestra esperanza definitiva.</li>
+      </ol>
+      <p class="mt-4">Este libro nos ayudará a mantener la tensión espiritual entre el "ya" de la primera venida y el "todavía no" de la última.</p>
+    `
+  },
+  {
+    type: 'chapter',
+    title: "Símbolos: La Corona",
+    content: `
+      <h3>La Corona de Adviento</h3>
+      <p>La corona es un círculo de follaje verde, sin principio ni fin, que simboliza la eternidad de Dios y la inmortalidad del alma. Las ramas verdes (generalmente de pino o abeto) representan la esperanza y la vida que no perece.</p>
+      <p><strong>Las Cuatro Velas:</strong></p>
+      <ul class="list-disc pl-5 space-y-2 mt-2">
+        <li><strong>1ª Morada:</strong> La vela de la vigilancia.</li>
+        <li><strong>2ª Morada:</strong> La vela de la preparación.</li>
+        <li><strong>3ª Rosa:</strong> La vela de la alegría (Gaudete).</li>
+        <li><strong>4ª Morada:</strong> La vela del amor.</li>
+      </ul>
+      <p class="mt-4">La luz progresiva disipa las tinieblas, recordándonos que Jesús es la Luz del mundo que vence a la oscuridad del pecado.</p>
+    `
+  },
+  // --- SEMANA 1 ---
+  {
+    type: 'section',
+    title: "Semana I: La Vigilancia",
+    content: `<div class="text-center py-20"><h1 class="text-4xl italic mb-6">Primera Semana</h1><hr class="w-16 mx-auto border-gray-400 mb-6"/><p class="text-xl">"El Señor viene. Estad preparados."</p></div>`
+  },
+  {
+    type: 'chapter',
+    title: "Día 1: Despertar del Sueño",
+    content: `
+      <h4>Lectura: Romanos 13, 11-12</h4>
+      <p class="italic text-sm ml-4 border-l-2 pl-4 border-gray-300">"Ya es hora de que despertéis del sueño, pues la salvación está ahora más cerca... La noche está avanzada, el día se echa encima."</p>
+      
+      <h4>Reflexión</h4>
+      <p>Comenzamos el camino. La primera llamada del Adviento es un grito de alerta: ¡Despertad! Vivimos a menudo sonámbulos, moviéndonos por inercia, preocupados por lo urgente y olvidando lo importante.</p>
+      <p>El "sueño" espiritual es esa tibieza que nos hace insensibles a las cosas de Dios. Es vivir como si Dios no existiera, aunque digamos creer en Él. San Pablo nos urge a sacudirnos esa modorra. No podemos recibir al Rey si estamos dormidos en el sofá de nuestra comodidad.</p>
+      
+      <h4>Propósito</h4>
+      <p>Hoy haré un examen de conciencia breve antes de dormir, preguntándome: ¿Qué me distrae de Dios?</p>
+      
+      <h4>Oración</h4>
+      <p>Señor Jesús, sacude mi alma. No permitas que viva dormido. Dame la gracia de la vigilancia para reconocer tu paso en mi vida diaria. Amén.</p>
+    `
+  },
+  {
+    type: 'chapter',
+    title: "Día 2: El Anhelo de Dios",
+    content: `
+      <h4>Lectura: Salmo 62</h4>
+      <p class="italic text-sm ml-4 border-l-2 pl-4 border-gray-300">"Oh Dios, tú eres mi Dios, por ti madrugo, mi alma está sedienta de ti; mi carne tiene ansia de ti, como tierra reseca, agostada, sin agua."</p>
+      
+      <h4>Reflexión</h4>
+      <p>El Adviento es el tiempo del deseo. Solo quien desea, espera. Si estamos satisfechos con nuestros bienes materiales, con nuestro éxito o nuestra fama, no esperaremos nada más. El corazón humano tiene un agujero infinito que solo Dios puede llenar.</p>
+      <p>San Agustín decía: "Nos hiciste, Señor, para ti, y nuestro corazón está inquieto hasta que descanse en ti". Recuperar el anhelo es recuperar la capacidad de rezar de verdad.</p>
+      
+      <h4>Propósito</h4>
+      <p>Repetiré durante el día esta jaculatoria: "Ven, Señor Jesús, mi alma te espera".</p>
+    `
+  },
+  {
+    type: 'chapter',
+    title: "Día 3: Caminar en Sus Sendas",
+    content: `
+      <h4>Lectura: Isaías 2, 3</h4>
+      <p class="italic text-sm ml-4 border-l-2 pl-4 border-gray-300">"Venid, subamos al monte del Señor... Él nos instruirá en sus caminos y marcharemos por sus sendas."</p>
+      
+      <h4>Reflexión</h4>
+      <p>La fe es dinámica, es un "caminar". No es un seguro estático que nos protege de todo mal, sino un camino que se hace al andar. Isaías nos invita a subir al monte, lo cual requiere esfuerzo.</p>
+      <p>Subir implica dejar peso atrás. No se puede escalar una montaña con una mochila llena de piedras innecesarias: rencores pasados, culpas ya perdonadas, apegos materiales. Adviento es tiempo de aligerar el equipaje.</p>
+      
+      <h4>Propósito</h4>
+      <p>Identificaré algo material que no necesito y lo prepararé para donarlo a quien lo necesite.</p>
+    `
+  },
+  {
+    type: 'chapter',
+    title: "Día 4: La Promesa de Paz",
+    content: `
+      <h4>Lectura: Isaías 11, 6</h4>
+      <p class="italic text-sm ml-4 border-l-2 pl-4 border-gray-300">"Habitará el lobo con el cordero, la pantera se tumbará con el cabrito... un muchacho pequeño los pastorea."</p>
+      
+      <h4>Reflexión</h4>
+      <p>Las profecías mesiánicas hablan de una paz imposible a los ojos humanos: el lobo y el cordero juntos. Es la imagen de la reconciliación total. A veces, los "lobos" están dentro de nosotros mismos: nuestra ira, nuestra envidia, nuestros instintos desordenados.</p>
+      <p>Jesús viene a poner paz en esa guerra civil interior que a veces sufrimos. Él es el "Príncipe de la Paz". Solo cuando hay paz dentro, podemos ser constructores de paz fuera.</p>
+      
+      <h4>Oración</h4>
+      <p>Señor, pacifica mi corazón. Que tu presencia amanse mis instintos y ordene mis afectos.</p>
+    `
+  },
+  {
+    type: 'chapter',
+    title: "Día 5: La Roca Firme",
+    content: `
+      <h4>Lectura: Mateo 7, 24</h4>
+      <p class="italic text-sm ml-4 border-l-2 pl-4 border-gray-300">"El que escucha estas palabras mías y las pone en práctica se parece a aquel hombre prudente que edificó su casa sobre roca."</p>
+      
+      <h4>Reflexión</h4>
+      <p>Vivimos en un mundo líquido, donde todo cambia, nada permanece. Las modas pasan, las ideologías caen, los imperios desaparecen. Solo la Palabra de Dios permanece para siempre.</p>
+      <p>Construir sobre roca significa fundamentar nuestra vida en lo que no pasa. El Adviento nos invita a revisar los cimientos de nuestra "casa". ¿En qué baso mi seguridad? ¿En mi cuenta bancaria o en la Providencia divina?</p>
+      
+      <h4>Propósito</h4>
+      <p>Leeré un capítulo entero del Evangelio de San Mateo hoy.</p>
+    `
+  },
+  {
+    type: 'chapter',
+    title: "Día 6: Los Ojos de la Fe",
+    content: `
+      <h4>Lectura: Isaías 29, 18</h4>
+      <p class="italic text-sm ml-4 border-l-2 pl-4 border-gray-300">"Aquel día, oirán los sordos las palabras del libro; sin tinieblas ni oscuridad verán los ojos de los ciegos."</p>
+      
+      <h4>Reflexión</h4>
+      <p>La ceguera espiritual es peor que la física. Consiste en ver los acontecimientos de la vida solo desde una perspectiva humana, sin descubrir la mano de Dios en ellos.</p>
+      <p>Jesús viene a devolvernos la vista. A enseñarnos a mirar al pobre no como una molestia, sino como a un hermano; a mirar el sufrimiento no como una maldición, sino como un camino de redención; a mirar la muerte no como el final, sino como el paso a la Vida.</p>
+      
+      <h4>Oración</h4>
+      <p>¡Señor, que vea! Limpia mis ojos para contemplar tus maravillas.</p>
+    `
+  },
+  {
+    type: 'chapter',
+    title: "Día 7: María, Maestra de Espera",
+    content: `
+      <h4>Lectura: Lucas 1, 28</h4>
+      <p class="italic text-sm ml-4 border-l-2 pl-4 border-gray-300">"Alégrate, llena de gracia, el Señor está contigo."</p>
+      
+      <h4>Reflexión</h4>
+      <p>Cerramos la primera semana de la mano de María. Ella es la mujer del Adviento por excelencia. Durante nueve meses, ella fue el "Arca de la Nueva Alianza". Su espera no fue ansiosa, sino apacible y orante.</p>
+      <p>Imaginemos los días de María: haciendo las tareas cotidianas de la casa, barriendo, cocinando, pero con el Misterio infinito creciendo en sus entrañas. Ella nos enseña a santificar lo ordinario.</p>
+      
+      <h4>Propósito</h4>
+      <p>Rezaré el Santo Rosario, meditando especialmente los misterios gozosos.</p>
+    `
+  },
+  
+  // --- SEMANA 2 ---
+  {
+    type: 'section',
+    title: "Semana II: La Conversión",
+    content: `<div class="text-center py-20"><h1 class="text-4xl italic mb-6">Segunda Semana</h1><hr class="w-16 mx-auto border-gray-400 mb-6"/><p class="text-xl">"Preparad el camino del Señor."</p></div>`
+  },
+  {
+    type: 'chapter',
+    title: "Día 8: Juan el Bautista",
+    content: `
+      <h4>Lectura: Marcos 1, 3-4</h4>
+      <p class="italic text-sm ml-4 border-l-2 pl-4 border-gray-300">"Voz que grita en el desierto: Preparad el camino del Señor, allanad sus senderos."</p>
+      
+      <h4>Reflexión</h4>
+      <p>Aparece en escena el gigante del Adviento: Juan el Bautista. Es el último de los profetas del Antiguo Testamento y el primero en señalar al Mesías presente.</p>
+      <p>Juan es austero. No viste ropas finas, no vive en palacios. Su austeridad es una denuncia a nuestra sociedad de consumo. Nos enseña que para estar llenos de Dios, necesitamos vaciarnos de lo superfluo. Su voz molesta porque nos dice la verdad: necesitamos cambiar.</p>
+      
+      <h4>Propósito</h4>
+      <p>Me privaré de algún capricho (comida, dulce, compra) y ofreceré ese sacrificio por mi conversión.</p>
+    `
+  },
+  {
+    type: 'chapter',
+    title: "Día 9: El Consuelo de Dios",
+    content: `
+      <h4>Lectura: Isaías 40, 1</h4>
+      <p class="italic text-sm ml-4 border-l-2 pl-4 border-gray-300">"Consolad, consolad a mi pueblo, dice vuestro Dios."</p>
+      
+      <h4>Reflexión</h4>
+      <p>La conversión no es un ejercicio de autoflagelación triste. Comienza escuchando el consuelo de Dios. Dios no quiere que vivamos aplastados por nuestras culpas.</p>
+      <p>El verdadero arrepentimiento nace del amor, no del miedo. Nos duele haber ofendido a quien tanto nos ama. Ese dolor es sanador. Deja que Dios te consuele hoy: tus pecados no son más grandes que su misericordia.</p>
+      
+      <h4>Oración</h4>
+      <p>Espíritu Santo, Consolador, ven a sanar las heridas de mi pecado.</p>
+    `
+  },
+  {
+    type: 'chapter',
+    title: "Día 10: Allanar los Montes",
+    content: `
+      <h4>Reflexión sobre la Topografía Espiritual</h4>
+      <p>Juan pide "allanar los senderos". Espiritualmente, esto implica una obra de ingeniería interior:</p>
+      <ul class="list-disc pl-5 space-y-2 mt-4">
+        <li><strong>Bajar los montes:</strong> Rebajar nuestro orgullo, nuestra soberbia, esa altivez con la que miramos a los demás por encima del hombro.</li>
+        <li><strong>Rellenar los valles:</strong> Superar nuestras omisiones, nuestra pereza, la falta de caridad y los vacíos de oración.</li>
+        <li><strong>Enderezar lo torcido:</strong> Rectificar intenciones. ¿Hago el bien para ser visto o por amor a Dios?</li>
+      </ul>
+      
+      <h4>Propósito</h4>
+      <p>Pediré perdón hoy a alguien a quien haya tratado con brusquedad o indiferencia.</p>
+    `
+  },
+  {
+    type: 'chapter',
+    title: "Día 11: El Yugo Suave",
+    content: `
+      <h4>Lectura: Mateo 11, 28-30</h4>
+      <p class="italic text-sm ml-4 border-l-2 pl-4 border-gray-300">"Venid a mí todos los que estáis cansados y agobiados, y yo os aliviaré."</p>
+      
+      <h4>Reflexión</h4>
+      <p>El Adviento es también descanso. Muchas veces llegamos a diciembre exhaustos, quemados por el estrés del año. Jesús nos ofrece un intercambio: "Dame tu carga, toma mi yugo".</p>
+      <p>El yugo de Jesús es la voluntad del Padre. Cuando aceptamos la voluntad de Dios, incluso las cruces se vuelven más ligeras porque Él las carga con nosotros. La rebeldía agota; la aceptación libera.</p>
+      
+      <h4>Oración</h4>
+      <p>Jesús, manso y humilde de corazón, haz mi corazón semejante al tuyo.</p>
+    `
+  },
+  {
+    type: 'chapter',
+    title: "Día 12: La Emperatriz de América",
+    content: `
+      <h4>Fiesta de Ntra. Sra. de Guadalupe</h4>
+      <p>En medio del Adviento, el cielo se abre sobre el Tepeyac. María se presenta como una mujer embarazada (con la cinta negra en la cintura, signo azteca de gravidez).</p>
+      <p>Ella trae a la verdadera Luz a un pueblo que vivía en tinieblas de idolatría. Sus palabras a San Juan Diego resuenan hoy para nosotros: <em>"¿No estoy yo aquí, que soy tu Madre? ¿No estás bajo mi sombra y resguardo?"</em>.</p>
+      <p>En el Adviento, María nos enseña a ser misioneros: ella no guardó a Jesús para sí, lo llevó a América, lo lleva al mundo.</p>
+      
+      <h4>Propósito</h4>
+      <p>Poner una imagen de la Virgen en un lugar visible y adornarla con una flor.</p>
+    `
+  },
+  {
+    type: 'chapter',
+    title: "Día 13: La Grandeza de los Pequeños",
+    content: `
+      <h4>Lectura: Mateo 11, 11</h4>
+      <p class="italic text-sm ml-4 border-l-2 pl-4 border-gray-300">"Entre los nacidos de mujer no ha surgido uno mayor que Juan el Bautista; sin embargo, el más pequeño en el Reino de los Cielos es mayor que él."</p>
+      
+      <h4>Reflexión</h4>
+      <p>La lógica del Reino invierte nuestros valores. Para ser grande, hay que hacerse pequeño. El niño es el modelo. El niño confía, el niño depende, el niño se deja llevar.</p>
+      <p>Dios se hace Niño en Navidad para que no tengamos miedo de acercarnos a Él. Si Dios viniera como un guerrero poderoso, temblaríamos. Pero viene como un bebé, y ante un bebé, solo podemos sonreír y abrir los brazos.</p>
+    `
+  },
+  {
+    type: 'chapter',
+    title: "Día 14: La Noche Oscura",
+    content: `
+      <h4>Memoria de San Juan de la Cruz</h4>
+      <p>Este doctor de la Iglesia nos enseña que a veces Dios permite que sintamos sequedad y oscuridad. No es para castigarnos, sino para purificar nuestra fe.</p>
+      <p>Si rezamos solo cuando "sentimos bonito", nos amamos a nosotros mismos, no a Dios. La fe madura reza en el desierto, camina a oscuras fiándose de la mano de Dios. El Adviento es caminar en la noche esperando la Aurora.</p>
+      
+      <h4>Reflexión</h4>
+      <p>¿Soy fiel a mi oración aunque no tenga ganas?</p>
+    `
+  },
+  
+  // --- SEMANA 3 ---
+  {
+    type: 'section',
+    title: "Semana III: La Alegría",
+    content: `<div class="text-center py-20"><h1 class="text-4xl italic mb-6">Tercera Semana</h1><h2 class="text-2xl mb-6 text-pink-500 font-bold">Gaudete</h2><hr class="w-16 mx-auto border-gray-400 mb-6"/><p class="text-xl">"Estad siempre alegres en el Señor."</p></div>`
+  },
+  {
+    type: 'chapter',
+    title: "Día 15: Domingo de Gaudete",
+    content: `
+      <h4>Lectura: Filipenses 4, 4-5</h4>
+      <p class="italic text-sm ml-4 border-l-2 pl-4 border-gray-300">"Estad siempre alegres en el Señor; os lo repito, estad alegres. Que vuestra mesura la conozca todo el mundo. El Señor está cerca."</p>
+      
+      <h4>Reflexión</h4>
+      <p>Hoy el color litúrgico cambia del morado austero al rosa alegre. ¿Cuál es el motivo de esta alegría? No es que nuestros problemas hayan desaparecido. El motivo es una Presencia: "El Señor está cerca".</p>
+      <p>La tristeza cristiana es un contrasentido. Un santo triste es un triste santo. Incluso en medio del dolor, el cristiano tiene un fondo de paz y esperanza que nadie le puede arrebatar. Nuestra alegría no depende de "cómo me van las cosas", sino de "con quién estoy".</p>
+      
+      <h4>Oración</h4>
+      <p>Espíritu Santo, fuente de gozo, destierra de mí la tristeza mundana y dame la alegría de los hijos de Dios.</p>
+    `
+  },
+  {
+    type: 'chapter',
+    title: "Día 16: La Autoridad de Jesús",
+    content: `
+      <h4>Lectura: Mateo 21, 23-27</h4>
+      <p>Jesús enseña con autoridad porque vive lo que predica. En el Adviento, Él viene a reclamar autoridad sobre nuestra vida. No como un tirano, sino como el Pastor legítimo.</p>
+      <p>A menudo le decimos a Jesús: "Tú reina en la Iglesia, pero en mi dinero, en mi sexualidad o en mis planes profesionales, mando yo".</p>
+      <p>La conversión total implica entregarle las llaves de todas las habitaciones de nuestra vida, incluso de esos cuartos oscuros que no mostramos a nadie. Él quiere entrar allí para limpiar e iluminar.</p>
+    `
+  },
+  {
+    type: 'chapter',
+    title: "Día 17: Las Antífonas de la O - I",
+    content: `
+      <h4>Comienzan las Antífonas Mayores</h4>
+      <p>Desde el 17 de diciembre, la Iglesia canta con intensidad especial. Son siete invocaciones que empiezan por "Oh".</p>
+      
+      <div class="mt-6 border p-4 rounded-lg bg-black/5">
+        <h3 class="text-center font-bold">O Sapientia (Oh Sabiduría)</h3>
+        <p class="italic mt-2">"Oh Sabiduría, que brotaste de los labios del Altísimo, abarcando del uno al otro confín, y ordenándolo todo con firmeza y suavidad: ven y muéstranos el camino de la salvación."</p>
+      </div>
+      
+      <h4>Reflexión</h4>
+      <p>Pedimos la Sabiduría, que no es saber muchas cosas (erudición), sino "saborear" las cosas de Dios. Ver la vida con los ojos de Dios.</p>
+    `
+  },
+  {
+    type: 'chapter',
+    title: "Día 18: Las Antífonas de la O - II",
+    content: `
+      <div class="mt-6 border p-4 rounded-lg bg-black/5">
+        <h3 class="text-center font-bold">O Adonai (Oh Señor Poderoso)</h3>
+        <p class="italic mt-2">"Oh Adonai, Pastor de la casa de Israel, que te apareciste a Moisés en la zarza ardiente... ven a librarnos con el poder de tu brazo."</p>
+      </div>
+      
+      <h4>Reflexión sobre San José</h4>
+      <p>Hoy recordamos también a José. Él experimentó el poder de Dios en el silencio. Ante el misterio del embarazo de María, José optó por la caridad y la prudencia antes que por la justicia legalista. Y en sueños, Dios le habló.</p>
+      <p>José es el hombre que se fía de Dios incluso cuando todo parece confuso. Es el patrono de la confianza en la Providencia.</p>
+      
+      <h4>Propósito</h4>
+      <p>Rezar un Padrenuestro pidiendo por los padres de familia.</p>
+    `
+  },
+  {
+    type: 'chapter',
+    title: "Día 19: Las Antífonas de la O - III",
+    content: `
+      <div class="mt-6 border p-4 rounded-lg bg-black/5">
+        <h3 class="text-center font-bold">O Radix Jesse (Oh Raíz de Jesé)</h3>
+        <p class="italic mt-2">"Oh Raíz de Jesé, que te alzas como un signo para los pueblos... ven a librarnos, no tardes más."</p>
+      </div>
+      
+      <h4>Reflexión: La Esterilidad Fecunda</h4>
+      <p>Recordamos hoy a las madres estériles de la Biblia: Sara, Ana, Isabel. De troncos secos, Dios hace brotar vida. Jesé era el padre de David; el tronco parecía muerto, pero de él brota un renuevo: Jesús.</p>
+      <p>No hay situación perdida para Dios. Donde tú ves un final, Dios ve un comienzo. Donde tú ves fracaso, Dios prepara una victoria de gracia.</p>
+    `
+  },
+  {
+    type: 'chapter',
+    title: "Día 20: Las Antífonas de la O - IV",
+    content: `
+      <div class="mt-6 border p-4 rounded-lg bg-black/5">
+        <h3 class="text-center font-bold">O Clavis David (Oh Llave de David)</h3>
+        <p class="italic mt-2">"Oh Llave de David y Cetro de la casa de Israel; que abres y nadie puede cerrar, cierras y nadie puede abrir: ven y libra a los cautivos que viven en tinieblas y en sombra de muerte."</p>
+      </div>
+      
+      <h4>Reflexión</h4>
+      <p>Jesús es la Llave. Solo Él puede abrir la puerta del Cielo y la puerta de nuestro corazón. A veces nos encerramos en prisiones construidas por nosotros mismos: miedo, rencor, vicio.</p>
+      <p>Gritemos hoy: ¡Ven, Señor! Abre mis cadenas. Sácame de la cárcel de mi egoísmo.</p>
+    `
+  },
+  {
+    type: 'chapter',
+    title: "Día 21: Las Antífonas de la O - V",
+    content: `
+      <div class="mt-6 border p-4 rounded-lg bg-black/5">
+        <h3 class="text-center font-bold">O Oriens (Oh Sol Naciente)</h3>
+        <p class="italic mt-2">"Oh Sol que naces de lo alto, Resplandor de la luz eterna, Sol de justicia: ven ahora a iluminar a los que viven en tinieblas y en sombra de muerte."</p>
+      </div>
+      
+      <h4>Reflexión: El Solsticio</h4>
+      <p>En el hemisferio norte, son los días más oscuros del año. Justo cuando la noche parece vencer, la luz comienza a crecer. Cristo es el verdadero Sol invicto.</p>
+      <p>La Visitación: María viaja aprisa a la montaña. Lleva al "Sol" en su seno. Su presencia ilumina la casa de Isabel y hace saltar de alegría a Juan. ¿Llevo yo luz a donde voy, o llevo quejas y oscuridad?</p>
+    `
+  },
+  
+  // --- SEMANA 4 ---
+  {
+    type: 'section',
+    title: "Semana IV: El Enmanuel",
+    content: `<div class="text-center py-20"><h1 class="text-4xl italic mb-6">Cuarta Semana</h1><hr class="w-16 mx-auto border-gray-400 mb-6"/><p class="text-xl">"Todo esto sucedió para que se cumpliera lo que el Señor había anunciado."</p></div>`
+  },
+  {
+    type: 'chapter',
+    title: "Día 22: O Rex Gentium",
+    content: `
+      <div class="mt-6 border p-4 rounded-lg bg-black/5">
+        <h3 class="text-center font-bold">O Rex Gentium (Oh Rey de las Naciones)</h3>
+        <p class="italic mt-2">"Oh Rey de las naciones y Deseado de los pueblos, Piedra angular de la Iglesia, que haces de dos pueblos uno solo: ven y salva al hombre, que formaste del barro de la tierra."</p>
+      </div>
+      
+      <h4>Reflexión: El Magnificat</h4>
+      <p>María canta: "Proclama mi alma la grandeza del Señor". Es el canto de los humildes. María no se atribuye nada; todo es don. El Rey de las Naciones elige un trono humilde.</p>
+      <p>Aprendamos a dar gracias. El agradecimiento es la memoria del corazón. Haz una lista de 10 gracias recibidas este año antes de que termine.</p>
+    `
+  },
+  {
+    type: 'chapter',
+    title: "Día 23: O Emmanuel",
+    content: `
+      <div class="mt-6 border p-4 rounded-lg bg-black/5">
+        <h3 class="text-center font-bold">O Emmanuel (Oh Dios-con-nosotros)</h3>
+        <p class="italic mt-2">"Oh Emmanuel, rey y legislador nuestro, esperanza de las naciones y salvador de los pueblos: ven a salvarnos, Señor Dios nuestro."</p>
+      </div>
+      
+      <h4>Reflexión</h4>
+      <p>Es la última antífona. El nombre de Jesús es su misión: Dios salva. El nombre profético es Emmanuel: Dios con nosotros.</p>
+      <p>Ya no estamos solos en el universo inmenso. Dios no es una energía cósmica impersonal; es un rostro, un niño, un corazón que late junto al nuestro. Estamos a las puertas. La liturgia contiene la respiración.</p>
+    `
+  },
+  {
+    type: 'chapter',
+    title: "Día 24: La Noche Santa",
+    content: `
+      <h3>Víspera de Navidad</h3>
+      <p>Ha llegado el momento. El censo de César Augusto mueve la historia para que se cumpla la profecía: en Belén, la menor de las aldeas.</p>
+      <p><strong>Meditación de Nochebuena:</strong></p>
+      <p>Contempla a José y María buscando posada. Puerta tras puerta se cierra. "No hay lugar". Qué frase tan terrible. ¿Hay lugar en mi vida hoy?</p>
+      <p>No preparemos solo la cena y los regalos. Preparemos el alma. Esta noche, cuando beses al Niño Jesús, entrégale todo: tus éxitos y tus fracasos. Él viene a cargarlo todo.</p>
+      
+      <h4>Oración Familiar</h4>
+      <p><em>(Para rezar antes de la cena)</em><br/>"Bendice, Señor, esta mesa y a esta familia. Tú que naciste en la pobreza de Belén, haz que nunca nos falte el pan y que sepamos compartirlo con los necesitados. Amén."</p>
+    `
+  },
+  // --- NAVIDAD ---
+  {
+    type: 'section',
+    title: "TIEMPO DE NAVIDAD",
+    content: `<div class="text-center py-20"><h1 class="text-5xl italic font-bold mb-6 text-yellow-600">Navidad</h1><p class="text-2xl mt-4">"Y el Verbo se hizo carne, y habitó entre nosotros."</p></div>`
+  },
+  {
+    type: 'chapter',
+    title: "Día 25: El Nacimiento",
+    content: `
+      <h4>La Palabra se hizo Niño</h4>
+      <p>¡Feliz Navidad! No es una frase hecha. Es la realidad más bella de la historia. Dios se ha hecho uno de nosotros.</p>
+      <p>San León Magno exclama: "¡Reconoce, cristiano, tu dignidad!". Si Dios ha querido hacerse hombre, la vida humana tiene un valor infinito. Nadie es despreciable, porque Dios ha asumido el rostro humano.</p>
+      <p>Hoy no pidas nada. Solo adora. Como los pastores, quédate en silencio ante el misterio. Deja que la ternura de Dios te desarme. Dios se hace débil para que no tengamos miedo de amarlo.</p>
+    `
+  },
+  {
+    type: 'chapter',
+    title: "La Octava: Días 26-28",
+    content: `
+      <h4>La Fiesta Continúa</h4>
+      <p>La Iglesia celebra la "Octava de Navidad". Ocho días que son como un solo día de júbilo.</p>
+      <ul class="list-disc pl-5 space-y-4 mt-4">
+        <li><strong>26 de Dic - San Esteban:</strong> El primer mártir. La Navidad trae la Cruz. El amor a Cristo es más fuerte que la muerte.</li>
+        <li><strong>27 de Dic - San Juan Evangelista:</strong> El discípulo amado. El que recostó su cabeza en el pecho de Jesús en la Cena, ahora contempla al Niño. Es el apóstol del Amor.</li>
+        <li><strong>28 de Dic - Santos Inocentes:</strong> Recordamos a los niños que murieron por Cristo en lugar de Cristo. Oramos por la vida naciente amenazada hoy.</li>
+      </ul>
+    `
+  },
+  {
+    type: 'chapter',
+    title: "La Sagrada Familia",
+    content: `
+      <h4>Domingo de la Sagrada Familia</h4>
+      <p>Dios no quiso venir como un superhéroe solitario, sino en el seno de una familia humana. Santificó los vínculos familiares.</p>
+      <p>Jesús creció en sabiduría, estatura y gracia, obedeciendo a María y a José. La familia es la "iglesia doméstica", la primera escuela de virtudes.</p>
+      <p>Hoy rezamos por todas las familias, especialmente las que pasan por dificultades, división o enfermedad. Que Nazaret sea modelo de todo hogar cristiano.</p>
+    `
+  },
+  {
+    type: 'chapter',
+    title: "Santa María, Madre de Dios",
+    content: `
+      <h4>1 de Enero</h4>
+      <p>Comenzamos el año civil de la mejor manera: en brazos de la Madre. El título más antiguo y grande de la Virgen es <em>Theotokos</em>, Madre de Dios.</p>
+      <p>Ella nos entrega a Jesús. No lo guarda para sí. Al comenzar este nuevo año, nos ponemos bajo su manto. Que ella nos enseñe a "guardar todas estas cosas en el corazón", meditándolas día a día.</p>
+      <p>¡Feliz Año Nuevo en el Señor!</p>
+    `
+  },
+  {
+    type: 'chapter',
+    title: "Epílogo y Bendición",
+    content: `
+      <h3>Envío Final</h3>
+      <p>Hemos llegado al final de este libro, pero es solo el comienzo del camino. El Adviento y la Navidad nos han recargado las pilas espirituales para vivir el resto del año como hijos de la Luz.</p>
+      <p>Recuerda: El cristianismo no es una teoría, es un encuentro. Mantén vivo el encuentro con Cristo en la Eucaristía, en la oración diaria y en el servicio a los hermanos.</p>
+      <br/>
+      <p class="text-center font-bold italic">"Gloria a Dios en el cielo,<br/>y en la tierra paz a los hombres que ama el Señor."</p>
+      <br/><br/>
+      <div class="text-center text-sm text-gray-500">
+        <p>Fin de la Edición Digital</p>
+        <p>Laus Deo</p>
+      </div>
+    `
+  }
+];
+
+export default function KindleReader() {
+  const [currentPage, setCurrentPage] = useState(0);
+  const [theme, setTheme] = useState('sepia'); 
+  const [fontSize, setFontSize] = useState(18); 
+  const [showMenu, setShowMenu] = useState(false);
+  const [showSettings, setShowSettings] = useState(false);
+
+  // Scroll to top on page turn
+  const contentRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (contentRef.current) {
+      contentRef.current.scrollTop = 0;
+    }
+  }, [currentPage]);
+
+  const totalPages = bookData.length;
+  const currentData = bookData[currentPage];
+
+  const handleNext = () => {
+    if (currentPage < totalPages - 1) setCurrentPage(prev => prev + 1);
+  };
+
+  const handlePrev = () => {
+    if (currentPage > 0) setCurrentPage(prev => prev - 1);
+  };
+
+  const goToPage = (index: number) => {
+    setCurrentPage(index);
+    setShowMenu(false);
+  };
+
+  const themes = {
+    light: { bg: 'bg-white', text: 'text-gray-900', ui: 'bg-gray-100', accent: 'text-blue-600' },
+    sepia: { bg: 'bg-[#f4ecd8]', text: 'text-[#5b4636]', ui: 'bg-[#e9dec0]', accent: 'text-[#8c3b00]' },
+    dark: { bg: 'bg-[#1a1a1a]', text: 'text-[#cecece]', ui: 'bg-[#2a2a2a]', accent: 'text-blue-400' }
+  };
+  
+  const currentTheme = themes[theme as keyof typeof themes];
+  const progress = Math.round(((currentPage + 1) / totalPages) * 100);
+
+  return (
+    <div className={`h-screen w-full flex flex-col items-center justify-center ${currentTheme.bg} transition-colors duration-300 overflow-hidden font-serif select-none`}>
+      
+      {/* HEADER */}
+      <div className={`w-full h-14 flex items-center justify-between px-4 border-b ${theme === 'dark' ? 'border-gray-700' : 'border-gray-300/50'} z-10`}>
+        <div className="flex items-center gap-3">
+          <button onClick={() => setShowMenu(true)} className={`p-2 rounded-full hover:bg-black/5 ${currentTheme.text}`}>
+            <Menu size={24} />
+          </button>
+          <span className={`text-sm font-semibold uppercase tracking-widest ${currentTheme.text} opacity-70 hidden sm:block truncate max-w-[200px]`}>
+             {currentData.type === 'cover' ? '' : currentData.title}
+          </span>
+        </div>
+        
+        <div className="flex items-center gap-2">
+           <button onClick={() => setShowSettings(!showSettings)} className={`p-2 rounded-full hover:bg-black/5 ${currentTheme.text}`}>
+            <Type size={24} />
+          </button>
+        </div>
+      </div>
+
+      {/* SETTINGS POPUP */}
+      {showSettings && (
+        <div className={`absolute top-16 right-4 w-64 p-4 rounded-xl shadow-2xl z-50 border ${theme === 'dark' ? 'bg-[#2a2a2a] border-gray-600' : 'bg-white border-gray-200'}`}>
+          <div className="flex flex-col gap-4">
+            <div className="flex items-center justify-between px-2">
+              <Type size={16} className={theme === 'dark' ? 'text-white' : 'text-black'} />
+              <div className="flex items-center gap-3 bg-gray-200/20 rounded-lg p-1">
+                <button onClick={() => setFontSize(Math.max(14, fontSize - 2))} className="p-2 hover:bg-black/10 rounded">-</button>
+                <span className={theme === 'dark' ? 'text-white' : 'text-black'}>{fontSize}</span>
+                <button onClick={() => setFontSize(Math.min(32, fontSize + 2))} className="p-2 hover:bg-black/10 rounded">+</button>
+              </div>
+              <Type size={24} className={theme === 'dark' ? 'text-white' : 'text-black'} />
+            </div>
+            <hr className="opacity-20" />
+            <div className="flex justify-between gap-2">
+              <button onClick={() => setTheme('light')} className={`flex-1 py-2 rounded border ${theme === 'light' ? 'ring-2 ring-blue-500' : 'border-gray-300'} bg-white text-black text-xs`}>Aa</button>
+              <button onClick={() => setTheme('sepia')} className={`flex-1 py-2 rounded border ${theme === 'sepia' ? 'ring-2 ring-blue-500' : 'border-[#e0d6c2]'} bg-[#f4ecd8] text-[#5b4636] text-xs`}>Aa</button>
+              <button onClick={() => setTheme('dark')} className={`flex-1 py-2 rounded border ${theme === 'dark' ? 'ring-2 ring-blue-500' : 'border-gray-700'} bg-[#1a1a1a] text-white text-xs`}>Aa</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* TOC DRAWER */}
+      {showMenu && (
+        <div className="absolute inset-0 z-50 flex">
+          <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={() => setShowMenu(false)}></div>
+          <div className={`w-80 h-full ${theme === 'dark' ? 'bg-[#2a2a2a] text-gray-200' : 'bg-white text-gray-800'} shadow-2xl flex flex-col transform transition-transform`}>
+            <div className="p-4 border-b flex justify-between items-center">
+              <h2 className="font-bold text-lg">Índice</h2>
+              <button onClick={() => setShowMenu(false)}><X size={24} /></button>
+            </div>
+            <div className="overflow-y-auto flex-1 p-2">
+              {bookData.map((page, idx) => (
+                <button 
+                  key={idx} 
+                  onClick={() => goToPage(idx)}
+                  className={`w-full text-left p-3 rounded-lg text-sm mb-1 truncate ${currentPage === idx ? 'bg-blue-500 text-white' : 'hover:bg-black/5'}`}
+                >
+                  <span className="font-bold opacity-50 mr-2">{idx + 1}.</span>
+                  {page.title}
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* READER CONTENT */}
+      <div 
+        ref={contentRef}
+        className="flex-1 w-full max-w-3xl px-6 py-6 sm:px-16 sm:py-12 overflow-y-auto custom-scrollbar"
+        style={{ scrollBehavior: 'smooth' }}
+      >
+        <div className={`max-w-2xl mx-auto transition-opacity duration-500 ${currentTheme.text}`} style={{ fontSize: `${fontSize}px`, lineHeight: '1.8' }}>
+          
+          {currentData.type === 'cover' ? (
+            <div className="flex flex-col items-center justify-center min-h-[60vh] py-10 text-center border-4 double-border p-8 border-current rounded-sm">
+              {(currentData as any).image ? (
+                <img 
+                  src={(currentData as any).image} 
+                  alt="Cover" 
+                  className="w-48 h-auto mb-8 rounded shadow-md object-cover"
+                />
+              ) : (
+                <BookOpen size={80} strokeWidth={1} className="mb-8 opacity-80" />
+              )}
+              <h1 className="text-4xl sm:text-6xl font-serif font-bold mb-6 tracking-tight leading-tight">{currentData.title}</h1>
+              <p className="text-xl sm:text-2xl font-light italic mb-12 opacity-80">{currentData.subtitle}</p>
+              <div className="mt-auto pt-10 border-t border-current/20 w-full">
+                <p className="text-sm font-sans uppercase tracking-widest opacity-60">{currentData.author}</p>
+              </div>
+            </div>
+          ) : currentData.type === 'section' ? (
+             <div className="flex flex-col items-center justify-center min-h-[50vh] animate-fade-in" dangerouslySetInnerHTML={{ __html: currentData.content }} />
+          ) : (
+            <div className="animate-fade-in pb-20">
+              <div className="flex items-baseline justify-between border-b border-current/20 pb-4 mb-8">
+                <h2 className={`text-3xl font-bold ${currentTheme.accent}`}>{currentData.title}</h2>
+              </div>
+              <div className="text-justify font-serif space-y-4" dangerouslySetInnerHTML={{ __html: currentData.content }} />
+              <div className="flex justify-center mt-16 mb-8 opacity-30">
+                 <span>• • •</span>
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* FOOTER */}
+      <div className={`w-full h-16 border-t flex items-center justify-between px-4 sm:px-12 ${theme === 'dark' ? 'border-gray-700 bg-[#2a2a2a]' : 'border-gray-300/50 bg-white/50 backdrop-blur'}`}>
+        <div className="absolute bottom-0 left-0 h-1 bg-blue-500 transition-all duration-300" style={{ width: `${progress}%` }}></div>
+
+        <button 
+          onClick={handlePrev} 
+          disabled={currentPage === 0}
+          className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-all ${currentPage === 0 ? 'opacity-30 cursor-not-allowed' : `hover:bg-black/5 ${currentTheme.text}`}`}
+        >
+          <ChevronLeft size={20} />
+          <span className="hidden sm:inline text-sm font-medium">Anterior</span>
+        </button>
+
+        <span className={`text-xs sm:text-sm font-mono opacity-60 ${currentTheme.text}`}>
+          {currentPage + 1} / {totalPages}
+        </span>
+
+        <button 
+          onClick={handleNext} 
+          disabled={currentPage === totalPages - 1}
+          className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-all ${currentPage === totalPages - 1 ? 'opacity-30 cursor-not-allowed' : `hover:bg-black/5 ${currentTheme.text}`}`}
+        >
+          <span className="hidden sm:inline text-sm font-medium">Siguiente</span>
+          <ChevronRight size={20} />
+        </button>
+      </div>
+
+      <style>{`
+        .custom-scrollbar::-webkit-scrollbar {
+          width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+          background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+          background-color: rgba(0, 0, 0, 0.1);
+          border-radius: 10px;
+        }
+        .double-border {
+          border-style: double;
+          border-width: 6px;
+        }
+        .animate-fade-in {
+          animation: fadeIn 0.5s ease-in;
+        }
+        @keyframes fadeIn {
+          from { opacity: 0; transform: translateY(10px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+      `}</style>
+    </div>
+  );
+}
